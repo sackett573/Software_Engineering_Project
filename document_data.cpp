@@ -27,6 +27,6 @@ QVariant DocumentData::data(const QModelIndex &i, int) const
         j++;
     }
 
-    QVariant var(*target);
+    QVariant var;
     return var;
 }
