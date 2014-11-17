@@ -8,7 +8,9 @@ SOURCES += \
     Source/main.cpp \
     Source/Controller/FileManager.cpp \
     Source/Controller/DocumentManager.cpp \
-    Source/Controller/Parser.cpp
+    Source/Controller/Parser.cpp \
+    Source/View/TextViewer.cpp \
+    Source/Application.cpp
 
 RESOURCES += \
     $$PWD/Source/View/qml.qrc
@@ -27,7 +29,8 @@ HEADERS += \
     Source/Model/Document.h \
     Source/Controller/FileManager.h \
     Source/Controller/DocumentManager.h \
-    Source/Controller/Parser.h
+    Source/Controller/Parser.h \
+    Source/View/TextViewer.h
 
 INCLUDEPATH = \
     $$PWD/Source \
