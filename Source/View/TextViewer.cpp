@@ -12,7 +12,8 @@ void TextViewer::paint(QPainter *painter)
 
         QPen penText(QColor("#000000"));
         QPen selectionText(QColor("#FFFFFF"));
-        QColor c(QColor("#00CCFF"));
+        QBrush normalBrush(QColor("#FFFFFF"));
+        QBrush selectionBrush(QColor("#00CCFF"));
 
         painter->setFont(m_currentFont);
 
@@ -24,7 +25,13 @@ void TextViewer::paint(QPainter *painter)
         m_numLines = 0;
         int i = 0;
 
+        QPen test(QColor("#00FF00"));
         QPen* currentPen = &penText;
+        QBrush b(QColor("#FF0000"));
+        painter->setBackground(b);
+        painter->setBackgroundMode(Qt::OpaqueMode);
+        currentPen = &test;
+
 
         while(m_currentDoc->m_buffer[i] != '\0')
         {
@@ -32,14 +39,13 @@ void TextViewer::paint(QPainter *painter)
             std::string line = m_currentDoc->m_buffer.substr(i, pos - i);
             QString temp = QString::fromStdString(line);
 
-            int subIndex = -1;
-            int subIndex2 = -1;
-
+            /*
             if(m_cursorPos >= i && m_cursorPos <= (i + temp.size()))
                 subIndex = m_cursorPos - i;
 
             if(m_selectionPos >= i && m_selectionPos <= (i + temp.size()))
                 subIndex2 = m_selectionPos - i;
+
 
             if(m_cursorPos != m_selectionPos && (subIndex != -1 || subIndex2 != -1))
             {
@@ -155,10 +161,10 @@ void TextViewer::paint(QPainter *painter)
                 }
             }
             else
-            {
-                painter->setPen(*currentPen);
-                painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
-            }
+            */
+            painter->setPen(*currentPen);
+            painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
+
 
             maxLineWidth = (maxLineWidth > (temp.size() * charWidth))?maxLineWidth:(temp.size() * charWidth);
 
