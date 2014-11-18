@@ -14,7 +14,6 @@ class TextViewer :
     Q_OBJECT
 
     Q_PROPERTY(Document* document READ currentDocument WRITE setDocument NOTIFY documentChanged)
-
 public:
     TextViewer(QQuickItem* parent = NULL) :
         QQuickPaintedItem(parent),
@@ -32,6 +31,8 @@ signals:
 
 private:
     Document* m_currentDoc;
+    int m_boundX;
+    int m_boundY;
 };
 
 #endif // TEXTVIEWER_H

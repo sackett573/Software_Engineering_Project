@@ -4,12 +4,14 @@ import TextViewer 1.0
 import Document 1.0
 
 ApplicationWindow {
+    id: mainApp
     visible: true
-    width: 640
-    height: 480
+    width: 800
+    height: 600
     title: qsTr("Hello World")
 
     menuBar: MenuBar {
+        id: menu
         Menu {
             title: qsTr("File")
             MenuItem {
@@ -28,13 +30,31 @@ ApplicationWindow {
         id: sidePanel
     }
 
-    TextViewer
+    Rectangle
     {
-        fillColor: "#FFFFFF"
-        document: AppData.document
-        anchors.left : sidePanel.right
-        anchors.top : parent.top
-        anchors.bottom : parent.bottom
-        anchors.right : parent.right
+        anchors.left: sidePanel.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        color: "#FFFFFF"
+        ScrollView
+        {
+            id: scroll
+            anchors.left : parent.left
+            anchors.top : parent.top
+            anchors.bottom : parent.bottom
+            anchors.right : parent.right
+            TextViewer
+            {
+                id: viewer
+                x: sidePanel.x
+                y: sidePanel.y
+                width: 1000
+                height: 1000
+                clip: true
+                fillColor: "#FFFFFF"
+                document: AppData.document
+            }
+        }
     }
 }
