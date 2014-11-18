@@ -10,6 +10,7 @@
 
 struct ApplicationData
 {
+    int cursorPosition;
     std::map<std::string, StyleEntry> m_styles;
     std::vector<Document> m_documents;
 };

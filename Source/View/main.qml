@@ -40,12 +40,9 @@ ApplicationWindow {
         ScrollView
         {
             id: scroll
-            anchors.left : parent.left
-            anchors.top : parent.top
-            anchors.bottom : parent.bottom
-            anchors.right : parent.right
+            anchors.fill: parent
             TextViewer
-            {
+            {  
                 id: viewer
                 x: sidePanel.x
                 y: sidePanel.y
@@ -54,6 +51,17 @@ ApplicationWindow {
                 clip: true
                 fillColor: "#FFFFFF"
                 document: AppData.document
+            }
+        }
+
+        MouseArea
+        {
+            anchors.fill : parent
+            onPressed: {
+                var val = viewer.getNewSelection(mouseX, mouseY);
+                AppData.cursorPosition = val;
+                viewer.cursorPos = val;
+                viewer.update();
             }
         }
     }
