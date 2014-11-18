@@ -17,6 +17,8 @@ class TextViewer :
 
     Q_PROPERTY(int cursorPos READ cursorPos WRITE setCursorPos NOTIFY cursorPosChanged)
 
+    Q_PROPERTY(bool cursorVisible READ cursorVisible WRITE setCursorVisible NOTIFY cursorVisibilityChanged)
+
     struct LineData
     {
         int lineStartIndex;
@@ -34,9 +36,13 @@ public:
 
     int cursorPos() const {return m_cursorPos;}
 
+    bool cursorVisible() const {return m_cursorVisible;}
+
     void setDocument(Document* doc) {m_currentDoc = doc;}
 
     void setCursorPos(int pos) {m_cursorPos = pos;}
+
+    void setCursorVisible(bool b) {m_cursorVisible = b;}
 
     void paint(QPainter *painter);
 
@@ -47,6 +53,8 @@ signals:
 
     void cursorPosChanged();
 
+    void cursorVisibilityChanged();
+
 private:
     QFont m_currentFont;
     Document* m_currentDoc;
@@ -55,6 +63,7 @@ private:
     int m_boundY;
     int m_numLines;
     int m_cursorPos;
+    bool m_cursorVisible;
 };
 
 #endif // TEXTVIEWER_H

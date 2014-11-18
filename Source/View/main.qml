@@ -54,6 +54,7 @@ ApplicationWindow {
             }
         }
 
+
         MouseArea
         {
             anchors.fill : parent
@@ -61,6 +62,23 @@ ApplicationWindow {
                 var val = viewer.getNewSelection(mouseX, mouseY);
                 AppData.cursorPosition = val;
                 viewer.cursorPos = val;
+                viewer.cursorVisible = true;
+                //cursorTimer.restart();
+                console.log("wakka " + val);
+                viewer.update();
+                mouse.accepted = false;
+            }
+        }
+
+        Timer
+        {
+            id: cursorTimer
+            interval: 800
+            running: true
+            repeat: true
+            onTriggered:
+            {
+                viewer.cursorVisible = !viewer.cursorVisible;
                 viewer.update();
             }
         }

@@ -35,7 +35,7 @@ void TextViewer::paint(QPainter *painter)
             m_lineData[m_numLines].lineStartIndex = i;
             if(pos == -1)
             {
-                m_lineData[m_numLines].lineEndIndex = m_currentDoc->m_buffer.size() - 2;
+                m_lineData[m_numLines].lineEndIndex = m_currentDoc->m_buffer.size();
                 break;
             }
             else
@@ -48,20 +48,23 @@ void TextViewer::paint(QPainter *painter)
         if(m_cursorPos == -1)
             m_cursorPos = 0;
 
-        for(auto& d : m_lineData)
+        if(m_cursorVisible)
         {
-            if(m_cursorPos >= d.second.lineStartIndex && m_cursorPos <= d.second.lineEndIndex)
+            for(auto& d : m_lineData)
             {
-                int charsFromLeft = m_cursorPos - d.second.lineStartIndex;
-                int x = (charsFromLeft * charWidth);
-                int y1 = (d.first) * charHeight;
-                int y2 = (d.first + 1) * charHeight;
-                painter->drawLine(x, y1, x, y2);
-                break;
+                if(m_cursorPos >= d.second.lineStartIndex && m_cursorPos <= d.second.lineEndIndex)
+                {
+                    int charsFromLeft = m_cursorPos - d.second.lineStartIndex;
+                    int x = (charsFromLeft * charWidth);
+                    int y1 = (d.first) * charHeight;
+                    int y2 = (d.first + 1) * charHeight;
+                    painter->drawLine(x, y1, x, y2);
+                    break;
+                }
             }
         }
 
-        this->setWidth(maxLineWidth);
+        this->setWidth(maxLineWidth + 1);
         this->setHeight(((m_numLines+1) * charHeight));
     }
 }
