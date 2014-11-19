@@ -19,7 +19,9 @@ class TextViewer :
 
     Q_PROPERTY(bool cursorVisible READ cursorVisible WRITE setCursorVisible NOTIFY cursorVisibilityChanged)
 
-    Q_PROPERTY(int selectionPos READ selectionPos WRITE setSelectionPos NOTIFY selectionPosChanged)
+    Q_PROPERTY(int begindex READ begindex WRITE setBegindex NOTIFY begindexChanged)
+
+    Q_PROPERTY(int endex READ endex WRITE setEndex NOTIFY endexChanged)
 
     struct LineData
     {
@@ -31,7 +33,9 @@ public:
     TextViewer(QQuickItem* parent = NULL) :
         QQuickPaintedItem(parent),
         m_currentDoc(NULL),
-        m_cursorPos(-1)
+        m_cursorPos(-1),
+        m_begindex(-1),
+        m_endex(-1)
         {}
 
     // Getters
@@ -41,7 +45,9 @@ public:
 
     bool cursorVisible() const {return m_cursorVisible;}
 
-    int selectionPos() const {return m_selectionPos;}
+    int begindex() const {return m_begindex;}
+
+    int endex() const {return m_endex;}
 
     // Setters
     void setDocument(Document* doc) {m_currentDoc = doc;}
@@ -50,7 +56,9 @@ public:
 
     void setCursorVisible(bool b) {m_cursorVisible = b;}
 
-    void setSelectionPos(int pos) {m_selectionPos = pos;}
+    void setBegindex(int pos) {m_begindex = pos;}
+
+    void setEndex(int pos) {m_endex = pos;}
 
     // Invokables
     Q_INVOKABLE int getNewSelection(int x, int y);
@@ -65,7 +73,9 @@ signals:
 
     void cursorVisibilityChanged();
 
-    void selectionPosChanged();
+    void begindexChanged();
+
+    void endexChanged();
 
 private:
     QFont m_currentFont;
@@ -73,7 +83,8 @@ private:
     std::map<int, LineData> m_lineData;
     int m_numLines;
     int m_cursorPos;
-    int m_selectionPos;
+    int m_begindex;
+    int m_endex;
     bool m_cursorVisible;
 };
 

@@ -25,13 +25,9 @@ void TextViewer::paint(QPainter *painter)
         m_numLines = 0;
         int i = 0;
 
-        QPen test(QColor("#00FF00"));
         QPen* currentPen = &penText;
-        QBrush b(QColor("#FF0000"));
-        painter->setBackground(b);
+        QBrush* currentBackground = &normalBrush;
         painter->setBackgroundMode(Qt::OpaqueMode);
-        currentPen = &test;
-
 
         while(m_currentDoc->m_buffer[i] != '\0')
         {
@@ -39,132 +35,102 @@ void TextViewer::paint(QPainter *painter)
             std::string line = m_currentDoc->m_buffer.substr(i, pos - i);
             QString temp = QString::fromStdString(line);
 
-            /*
-            if(m_cursorPos >= i && m_cursorPos <= (i + temp.size()))
-                subIndex = m_cursorPos - i;
-
-            if(m_selectionPos >= i && m_selectionPos <= (i + temp.size()))
-                subIndex2 = m_selectionPos - i;
-
-
-            if(m_cursorPos != m_selectionPos && (subIndex != -1 || subIndex2 != -1))
+            if(m_begindex != -1 && m_endex != -1 && m_begindex != m_endex)
             {
-                if(subIndex != -1 && subIndex2 != -1)
+                if(m_begindex >= i && m_begindex <= (i+ static_cast<int>(line.size())))
                 {
-                    int first, second;
-                    std::string sub1, sub2, sub3;
-                    if(subIndex > subIndex2)
+                    if(m_endex >= i && m_endex <= (i+ static_cast<int>(line.size())))
                     {
-                        first = subIndex2;
-                        second = subIndex;
-                        sub1 = line.substr(0, subIndex2);
-                        sub2 = line.substr(subIndex2, subIndex);
-                        sub3 = line.substr(subIndex, temp.size());
-                    }
-                    else
-                    {
-                        first = subIndex;
-                        second = subIndex2;
-                        sub1 = line.substr(0, subIndex);
-                        sub2 = line.substr(subIndex, subIndex2);
-                        sub3 = line.substr(subIndex2, temp.size());
-                    }
+                        int lastX = 0;
 
-                    painter->setPen(penText);
-                    painter->drawText(0, (m_numLines) * charHeight,
-                                      first * charWidth, (m_numLines+1) * charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub1));
-                    painter->setPen(selectionText);
-                    painter->drawText(first * charWidth, m_numLines * charHeight,
-                                      (second * charWidth) - (first * charWidth), (m_numLines+1) * charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub2));
-                    painter->setPen(selectionText);
-                    painter->setBrush(QBrush(c));
-                    painter->drawRect(first* charWidth, m_numLines * charHeight,
-                                      (second * charWidth) - (first * charWidth), (m_numLines+1) * charHeight);
+                        QString sub = QString::fromStdString(line.substr(0, m_begindex - i));
 
-                    painter->setBrush(QBrush(QColor("#FFFFFF")));
-                    painter->setPen(penText);
-                    painter->drawText(second * charWidth, m_numLines * charHeight,
-                                      (temp.size() * charWidth) - (second * charWidth), (m_numLines+1) *charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub3));
-                }
-                else if(subIndex != -1)
-                {
-                    std::string sub1, sub2;
-                    sub1 = line.substr(0, subIndex);
-                    sub2 = line.substr(subIndex, temp.size());
+                        painter->setPen(*currentPen);
+                        painter->setBackground(*currentBackground);
+                        painter->drawText(0, (m_numLines)*charHeight,
+                                         (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                          Qt::TextSingleLine, sub);
+                        lastX = sub.size() * charWidth;
 
-                    if(currentPen == &selectionText)
-                    {
-                        painter->setBrush(QBrush(c));
-                        painter->drawRect(0, m_numLines * charHeight,
-                                         (subIndex * charWidth), (m_numLines+1) * charHeight);
-                        painter->setBrush(QBrush(QColor("#FFFFFF")));
-                    }
-                    painter->setPen(*currentPen);
-                    painter->drawText(0, (m_numLines) * charHeight,
-                                      subIndex * charWidth, (m_numLines+1) * charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub1));
+                        sub = QString::fromStdString(line.substr(m_begindex - i, (m_endex - i) - (m_begindex - i)));
 
-                    if(currentPen == &penText)
                         currentPen = &selectionText;
-                    else
+                        currentBackground = &selectionBrush;
+                        painter->setPen(*currentPen);
+                        painter->setBackground(*currentBackground);
+                        painter->drawText(lastX, (m_numLines)*charHeight,
+                                         (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                          Qt::TextSingleLine, sub);
+                        lastX = lastX + (sub.size() * charWidth);
+
+                        sub = QString::fromStdString(line.substr(m_endex - i, (line.size()) - (m_endex -i)));
+
                         currentPen = &penText;
-
-                    if(currentPen == &selectionText)
-                    {
-                        painter->setBrush(QBrush(c));
-                        painter->drawRect(subIndex* charWidth, m_numLines * charHeight,
-                                         (temp.size() * charWidth) - (subIndex * charWidth), (m_numLines+1) * charHeight);
-                        painter->setBrush(QBrush(QColor("#FFFFFF")));
+                        currentBackground = &normalBrush;
+                        painter->setPen(*currentPen);
+                        painter->setBackground(*currentBackground);
+                        painter->drawText(lastX, (m_numLines)*charHeight,
+                                         (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                          Qt::TextSingleLine, sub);
                     }
-                    painter->setPen(*currentPen);
-                    painter->drawText(subIndex * charWidth, m_numLines * charHeight,
-                                      (temp.size() * charWidth) - (subIndex * charWidth), (m_numLines+1) * charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub2));
-                }
-                else if(subIndex2 != -1)
-                {
-                    std::string sub1, sub2;
-                    sub1 = line.substr(0, subIndex2);
-                    sub2 = line.substr(subIndex2, temp.size());
-
-                    if(currentPen == &selectionText)
+                    else
                     {
-                        painter->setBrush(QBrush(c));
-                        painter->drawRect(0, m_numLines * charHeight,
-                                         (subIndex2 * charWidth), (m_numLines+1) * charHeight);
-                        painter->setBrush(QBrush(QColor("#FFFFFF")));
-                    }
-                    painter->setPen(*currentPen);
-                    painter->drawText(0, (m_numLines) * charHeight,
-                                      subIndex2 * charWidth, (m_numLines+1) * charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub1));
+                        int lastX = 0;
 
-                    if(currentPen == &penText)
+                        QString sub = QString::fromStdString(line.substr(0, m_begindex - i));
+                        painter->setPen(*currentPen);
+                        painter->setBackground(*currentBackground);
+                        painter->drawText(0, (m_numLines)*charHeight,
+                                         (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                          Qt::TextSingleLine, sub);
+                        lastX = sub.size() * charWidth;
+
+                        sub = QString::fromStdString(line.substr(m_begindex - i, (line.size()) - (m_begindex - i)));
+
                         currentPen = &selectionText;
-                    else
-                        currentPen = &penText;
-
-                    if(currentPen == &selectionText)
-                    {
-                        painter->setBrush(QBrush(c));
-                        painter->drawRect(subIndex2* charWidth, m_numLines * charHeight,
-                                         (temp.size() * charWidth) - (subIndex2 * charWidth), (m_numLines+1) * charHeight);
-                        painter->setBrush(QBrush(QColor("#FFFFFF")));
+                        currentBackground =&selectionBrush;
+                        painter->setPen(*currentPen);
+                        painter->setBackground(*currentBackground);
+                        painter->drawText(lastX, (m_numLines)*charHeight,
+                                         (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                          Qt::TextSingleLine, sub);
                     }
+                }
+                else if(m_endex >= i && m_endex <= (i+ static_cast<int>(line.size())))
+                {
+                    int lastX = 0;
+
+                    QString sub = QString::fromStdString(line.substr(0, m_endex - i));
                     painter->setPen(*currentPen);
-                    painter->drawText(subIndex2 * charWidth, m_numLines * charHeight,
-                                      (temp.size() * charWidth) - (subIndex2 * charWidth), (m_numLines+1) * charHeight,
-                                      Qt::TextSingleLine, QString::fromStdString(sub2));
+                    painter->setBackground(*currentBackground);
+                    painter->drawText(0, (m_numLines)*charHeight,
+                                     (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                      Qt::TextSingleLine, sub);
+                    lastX = sub.size() * charWidth;
+
+                    sub = QString::fromStdString(line.substr(m_endex - i, (line.size()) - (m_endex - i)));
+
+                    currentPen = &penText;
+                    currentBackground =&normalBrush;
+                    painter->setPen(*currentPen);
+                    painter->setBackground(*currentBackground);
+                    painter->drawText(lastX, (m_numLines)*charHeight,
+                                     (sub.size() * charWidth), (m_numLines+1)*charHeight,
+                                      Qt::TextSingleLine, sub);
+                }
+                else
+                {
+                    painter->setPen(*currentPen);
+                    painter->setBackground(*currentBackground);
+                    painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
                 }
             }
             else
-            */
-            painter->setPen(*currentPen);
-            painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
-
+            {
+                painter->setPen(*currentPen);
+                painter->setBackground(*currentBackground);
+                painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
+            }
 
             maxLineWidth = (maxLineWidth > (temp.size() * charWidth))?maxLineWidth:(temp.size() * charWidth);
 

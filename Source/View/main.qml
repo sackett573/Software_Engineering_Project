@@ -52,21 +52,43 @@ ApplicationWindow {
                 width: textRect.width
                 height: textRect.height
                 preventStealing: true
+                hoverEnabled: true
                 onPressed: {
                     var val = viewer.getNewSelection(mouseX, mouseY);
                     AppData.cursorPosition = val;
                     viewer.cursorPos = val;
-                    viewer.selectionPos = val;
                     viewer.cursorVisible = true;
-                    //cursorTimer.restart();
+                    viewer.begindex = -1;
+                    viewer.endex = -1;
+                    cursorTimer.restart();
                     console.log("press " + val);
                     viewer.update();
                 }
 
-                onReleased: {
-                    var val = viewer.getNewSelection(mouseX, mouseY);
-                    viewer.selectionPos = val;
-                    console.log("release" + val);
+                onPositionChanged: {
+                    if(pressed)
+                    {
+                        var val = viewer.getNewSelection(mouseX, mouseY);
+
+                        if(val > viewer.cursorPos)
+                        {
+                            viewer.begindex = viewer.cursorPos;
+                            viewer.endex = val;
+                        }
+                        else if(val < viewer.cursorPos)
+                        {
+                            viewer.begindex = val;
+                            viewer.endex = viewer.cursorPos;
+                        }
+                        else
+                        {
+                            viewer.begindex = -1;
+                            viewer.endex = -1;
+                        }
+
+                        viewer.update();
+                        console.log("release" + val);
+                    }
                 }
             }
 
@@ -81,7 +103,6 @@ ApplicationWindow {
                 fillColor: "#FFFFFF"
                 document: AppData.document
 
-                /*
                 Timer
                 {
                     id: cursorTimer
@@ -94,7 +115,6 @@ ApplicationWindow {
                         viewer.update();
                     }
                 }
-                */
             }
         }
 
