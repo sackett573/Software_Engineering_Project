@@ -13,7 +13,6 @@ bool FileManager::open_document(const std::string& s)
     while(!in.atEnd())
     {
         QString line = in.readLine();
-        qDebug() << line;
         doc.m_buffer.append(line.toStdString());
         doc.m_buffer.push_back('\n');
     }

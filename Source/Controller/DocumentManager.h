@@ -4,6 +4,7 @@
 #include "ApplicationData.h"
 
 #include <string>
+#include <QDebug>
 
 class DocumentManager
 {
@@ -14,15 +15,15 @@ public:
 
     void copy(const std::string& docName, unsigned int begindex, unsigned int endex) const;
 
-    void cut(const std::string& docName);
+    void cut(const std::string& docName, unsigned int begindex, unsigned int endex);
 
     void paste(const std::string& docName, unsigned int index);
 
-    void find(const std::string& docName, const std::string& token) const;
+    int find(const std::string& docName, const std::string& token) const;
 
     void replace(const std::string& docName, const std::string& token, const std::string& replace);
 
-    void insert(const std::string& docName, unsigned int index, char toInsert);
+    void insert(int docIndex, unsigned int index, char toInsert);
 
 private:
     ApplicationData * const m_AppData;

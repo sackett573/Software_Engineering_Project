@@ -55,16 +55,20 @@ ApplicationWindow {
     Rectangle
     {
         id: textRect
-        x: sidePanel.x + sidePanel.width
-        y: sidePanel.y
-        width: mainApp.width - sidePanel.width
-        height: mainApp.height
+        anchors.top: parent.top
+        anchors.left: sidePanel.right
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
         color: "#FFFFFF"
         focus: true
 
         ScrollView
         {
-            anchors.fill: parent
+            x:0
+            y:0
+            width: textRect.width
+            height: textRect.height
+
             TextViewer
             {
                 id: viewer
@@ -169,7 +173,10 @@ ApplicationWindow {
             else
             {
                 if(event.text != "")
-                    console.log("character " + event.text);
+                {
+                    AppData.insert(AppData.docIndex, viewer.cursorPos, event.text);
+                    viewer.cursorPos++;
+                }
             }
 
             viewer.cursorVisible = true;
