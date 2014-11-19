@@ -10,7 +10,12 @@
 
 struct ApplicationData
 {
+    ApplicationData() :
+        m_currentDocIndex(-1)
+        {}
+
     int cursorPosition;
+    int m_currentDocIndex;
     std::map<std::string, StyleEntry> m_styles;
     std::vector<Document> m_documents;
 };

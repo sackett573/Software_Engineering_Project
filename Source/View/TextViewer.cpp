@@ -175,6 +175,11 @@ void TextViewer::paint(QPainter *painter)
         this->setWidth(maxLineWidth + 1);
         this->setHeight(((m_numLines+1) * charHeight));
     }
+    else
+    {
+        this->setWidth(1);
+        this->setHeight(1);
+    }
 }
 
 int TextViewer::getNewSelection(int x, int y)

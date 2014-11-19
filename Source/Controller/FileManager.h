@@ -4,6 +4,9 @@
 #include "ApplicationData.h"
 
 #include <string>
+#include <QDebug>
+#include <QFile>
+#include <QUrl>
 
 class FileManager
 {

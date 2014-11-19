@@ -2,21 +2,16 @@
 #include "Application.h"
 
 Application::Application() :
-    m_currentDocIndex(-1)
+    m_DocManager(&m_data),
+    m_FileManager(&m_data),
+    m_Parser(&m_data)
 {
-    // test
-    Document doc;
-    doc.m_filename = "test.h";
-    doc.m_buffer = "#include <iostream>\n\nint main()\n{\n    std::cout << \"hello!\" << std::endl;\n}";
-    m_data.m_documents.push_back(doc);
-    m_currentDocIndex = 0;
-    // test
 }
 
 Document* Application::getCurrentDocument()
 {
-    if(m_currentDocIndex != -1)
-        return &m_data.m_documents[m_currentDocIndex];
+    if(m_data.m_currentDocIndex != -1)
+        return &m_data.m_documents[m_data.m_currentDocIndex];
     else
         return NULL;
 }
