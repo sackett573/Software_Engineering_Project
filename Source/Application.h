@@ -37,41 +37,41 @@ public:
         emit documentChanged();
     }
 
-    Q_INVOKABLE void close_document(const QString& s)
+    Q_INVOKABLE void close_document(int docIndex)
     {
-        m_FileManager.close_document(s.toStdString());
+        m_FileManager.close_document(docIndex);
     }
 
-    Q_INVOKABLE void save_document(const QString& s)
+    Q_INVOKABLE void save_document(int docIndex)
     {
-        m_FileManager.save_document(s.toStdString());
+        m_FileManager.save_document(docIndex);
     }
 
-    Q_INVOKABLE void cut(const QString& docname, unsigned int begindex, unsigned int endex)
+    Q_INVOKABLE void cut(int docIndex, unsigned int begindex, unsigned int endex)
     {
-        m_DocManager.cut(docname.toStdString(), begindex, endex);
+        m_DocManager.cut(docIndex, begindex, endex);
         emit documentChanged();
     }
 
-    Q_INVOKABLE void copy(const QString& docname, unsigned int begindex, unsigned int endex)
+    Q_INVOKABLE void copy(int docIndex, unsigned int begindex, unsigned int endex)
     {
-        m_DocManager.copy(docname.toStdString(), begindex, endex);
+        m_DocManager.copy(docIndex, begindex, endex);
     }
 
-    Q_INVOKABLE void paste(const QString& docname, unsigned int index)
+    Q_INVOKABLE void paste(int docIndex, unsigned int index)
     {
-        m_DocManager.paste(docname.toStdString(), index);
+        m_DocManager.paste(docIndex, index);
         emit documentChanged();
     }
 
-    Q_INVOKABLE void find(const QString& docname, const QString& token)
+    Q_INVOKABLE void find(int docIndex, const QString& token)
     {
-        m_DocManager.find(docname.toStdString(), token.toStdString());
+        m_DocManager.find(docIndex, token.toStdString());
     }
 
-    Q_INVOKABLE void replace(const QString& docname, const QString& token, const QString& replaceToken)
+    Q_INVOKABLE void replace(int docIndex, const QString& token, const QString& replaceToken)
     {
-        m_DocManager.replace(docname.toStdString(), token.toStdString(), replaceToken.toStdString());
+        m_DocManager.replace(docIndex, token.toStdString(), replaceToken.toStdString());
         emit documentChanged();
     }
 
