@@ -17,9 +17,9 @@ public:
 
     bool open_document(const std::string& path);
 
-    void close_document(const std::string& path);
+    void close_document(int docIndex);
 
-    bool save_document(const std::string& path);
+    bool save_document(int docIndex);
 
 private:
     ApplicationData * const m_AppData;

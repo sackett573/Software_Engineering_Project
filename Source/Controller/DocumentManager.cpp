@@ -1,27 +1,27 @@
 #include "DocumentManager.h"
 
-void DocumentManager::copy(const std::string&, unsigned int, unsigned int) const
+void DocumentManager::copy(int, unsigned int, unsigned int) const
 {
     // stub
 }
 
-void DocumentManager::cut(const std::string&, unsigned int, unsigned int)
+void DocumentManager::cut(int, unsigned int, unsigned int)
 {
     // stub
 }
 
-void DocumentManager::paste(const std::string&, unsigned int)
+void DocumentManager::paste(int, unsigned int)
 {
     // stub
 }
 
-int DocumentManager::find(const std::string&, const std::string&) const
+int DocumentManager::find(int, const std::string&) const
 {
     // stub
     return 0;
 }
 
-void DocumentManager::replace(const std::string&, const std::string&, const std::string&)
+void DocumentManager::replace(int, const std::string&, const std::string&)
 {
     // stub
 }

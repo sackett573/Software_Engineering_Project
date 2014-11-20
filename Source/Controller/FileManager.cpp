@@ -23,12 +23,12 @@ bool FileManager::open_document(const std::string& s)
     return true;
 }
 
-void FileManager::close_document(const std::string &)
+void FileManager::close_document(int)
 {
     // stub
 }
 
-bool FileManager::save_document(const std::string &)
+bool FileManager::save_document(int)
 {
     // stub
     return true;
