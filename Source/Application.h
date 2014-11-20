@@ -58,10 +58,11 @@ public:
         m_DocManager.copy(docIndex, begindex, endex);
     }
 
-    Q_INVOKABLE void paste(int docIndex, unsigned int index)
+    Q_INVOKABLE int paste(int docIndex, unsigned int index)
     {
-        m_DocManager.paste(docIndex, index);
+        int size = m_DocManager.paste(docIndex, index);
         emit documentChanged();
+        return size;
     }
 
     Q_INVOKABLE void find(int docIndex, const QString& token)
@@ -78,6 +79,12 @@ public:
     Q_INVOKABLE void insert(int docIndex, unsigned int pos, QString a)
     {
         m_DocManager.insert(docIndex, pos, a.toStdString()[0]);
+        emit documentChanged();
+    }
+
+    Q_INVOKABLE void backspace(int docIndex, unsigned int pos)
+    {
+        m_DocManager.backspace(docIndex, pos);
         emit documentChanged();
     }
 

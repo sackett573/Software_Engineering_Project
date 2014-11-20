@@ -1,8 +1,14 @@
 #include "DocumentManager.h"
 
-void DocumentManager::copy(int, unsigned int, unsigned int) const
+void DocumentManager::copy(int docIndex, unsigned int begindex, unsigned int endex) const
 {
-    // stub
+    QClipboard * clipboard = QApplication::clipboard();
+
+    std::string seg = m_AppData->m_documents[docIndex].m_buffer.substr(begindex, endex - begindex);
+    QString segment = QString::fromStdString(seg);
+    clipboard->setText(segment);
+
+    qDebug() << "text copied: " + segment;
 }
 
 void DocumentManager::cut(int, unsigned int, unsigned int)
@@ -10,9 +16,15 @@ void DocumentManager::cut(int, unsigned int, unsigned int)
     // stub
 }
 
-void DocumentManager::paste(int, unsigned int)
+int DocumentManager::paste(int docIndex, unsigned int pos)
 {
-    // stub
+    QClipboard * clipboard = QApplication::clipboard();
+
+    Document& doc = m_AppData->m_documents[docIndex];
+    std::string s = clipboard->text().toStdString();
+    doc.m_buffer.insert(pos, s);
+
+    return s.size();
 }
 
 int DocumentManager::find(int, const std::string&) const
@@ -28,8 +40,14 @@ void DocumentManager::replace(int, const std::string&, const std::string&)
 
 void DocumentManager::insert(int docIndex, unsigned int pos, char c)
 {
-    qDebug() << "insert func: " << c;
     Document& doc = m_AppData->m_documents[docIndex];
     std::string::iterator insertit = doc.m_buffer.begin() + pos;
     doc.m_buffer.insert(insertit, c);
+}
+
+void DocumentManager::backspace(int docIndex, unsigned int pos)
+{
+    Document& doc = m_AppData->m_documents[docIndex];
+    std::string::iterator removeit = doc.m_buffer.begin() + pos;
+    doc.m_buffer.erase(removeit);
 }

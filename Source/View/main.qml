@@ -148,31 +148,44 @@ ApplicationWindow {
         }
 
         Keys.onPressed: {
-            if(event.key == Qt.Key_Left)
+            if(event.key === Qt.Key_Left)
             {
                 if(viewer.cursorPos > 0)
                 {
                     viewer.cursorPos--;
                 }
             }
-            else if(event.key == Qt.Key_Right)
+            else if(event.key === Qt.Key_Right)
             {
             }
-            else if(event.key == Qt.Key_Up)
+            else if(event.key === Qt.Key_Up)
             {
 
             }
-            else if(event.key == Qt.Key_Down)
+            else if(event.key === Qt.Key_Down)
             {
 
             }
-            else if(event.key == Qt.Key_Backspace)
+            else if(event.key === Qt.Key_Backspace)
             {
-
+                AppData.backspace(AppData.docIndex, viewer.cursorPos);
+                if(viewer.cursorPos > 0)
+                    viewer.cursorPos--;
+            }
+            else if(event.key === Qt.Key_C && event.modifiers === Qt.ControlModifier&&
+                    viewer.begindex != -1 && viewer.endex != -1)
+            {
+                AppData.copy(AppData.docIndex, viewer.begindex, viewer.endex);
+            }
+            else if(event.key === Qt.Key_V && event.modifiers === Qt.ControlModifier)
+            {
+                var numChar = AppData.paste(AppData.docIndex, viewer.cursorPos);
+                console.log("" + numChar);
+                viewer.cursorPos += numChar;
             }
             else
             {
-                if(event.text != "")
+                if(event.text !== "" && event.modifiers !== Qt.ControlModifier)
                 {
                     AppData.insert(AppData.docIndex, viewer.cursorPos, event.text);
                     viewer.cursorPos++;

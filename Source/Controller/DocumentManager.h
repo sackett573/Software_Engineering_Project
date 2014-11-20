@@ -5,6 +5,8 @@
 
 #include <string>
 #include <QDebug>
+#include <QClipboard>
+#include <QApplication>
 
 class DocumentManager
 {
@@ -17,13 +19,15 @@ public:
 
     void cut(int docIndex, unsigned int begindex, unsigned int endex);
 
-    void paste(int docIndex, unsigned int index);
+    int paste(int docIndex, unsigned int index);
 
     int find(int docIndex, const std::string& token) const;
 
     void replace(int docIndex, const std::string& token, const std::string& replace);
 
     void insert(int docIndex, unsigned int index, char toInsert);
+
+    void backspace(int docIndex, unsigned int index);
 
 private:
     ApplicationData * const m_AppData;
