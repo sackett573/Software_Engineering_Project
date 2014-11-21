@@ -73,6 +73,8 @@ public:
 
     Q_INVOKABLE int newSelectionFromRowCol(int col, int row);
 
+    Q_INVOKABLE void updateRowCol();
+
     // Event Handlers
     void paint(QPainter *painter);
 

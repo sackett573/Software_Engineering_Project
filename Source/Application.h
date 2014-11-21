@@ -15,11 +15,9 @@ class Application :
 {
     Q_OBJECT
 
-    Q_PROPERTY(Document* document READ getCurrentDocument NOTIFY documentChanged)
-
     Q_PROPERTY(int cursorPosition READ cursorPosition WRITE setCursorPosition NOTIFY cursorMoved)
 
-    Q_PROPERTY(int docIndex READ currentIndex NOTIFY documentIndexChanged)
+    Q_PROPERTY(int docIndex READ currentIndex WRITE setCurrentIndex NOTIFY documentIndexChanged)
 
 public:
     Application();
@@ -30,11 +28,26 @@ public:
 
     int cursorPosition() const {return m_data.cursorPosition;}
 
+    void setCurrentIndex(int index) {m_data.m_currentDocIndex = index;}
+
     void setCursorPosition(int newPos) {m_data.cursorPosition = newPos;}
 
-    Q_INVOKABLE void open_document(const QString& s)
+    Q_INVOKABLE Document* get_document_at(int docIndex)
     {
-        m_FileManager.open_document(s.toStdString());
+        if(docIndex != -1)
+            return m_data.m_documents[docIndex];
+        else
+            return NULL;
+    }
+
+    Q_INVOKABLE int create_document(const QString& s)
+    {
+        return m_FileManager.create_document(s);
+    }
+
+    Q_INVOKABLE int open_document(const QString& s)
+    {
+        return m_FileManager.open_document(s);
         emit documentChanged();
     }
 
@@ -43,9 +56,14 @@ public:
         m_FileManager.close_document(docIndex);
     }
 
-    Q_INVOKABLE void save_document(int docIndex)
+    Q_INVOKABLE void save_document(const QString& s)
     {
-        m_FileManager.save_document(docIndex);
+        m_FileManager.save_document(s);
+    }
+
+    Q_INVOKABLE void save_document_by_index(int docIndex)
+    {
+        m_FileManager.save_document_by_index(docIndex);
     }
 
     Q_INVOKABLE void cut(int docIndex, unsigned int begindex, unsigned int endex)
@@ -97,6 +115,7 @@ signals:
     void cursorMoved();
 
 private:
+    int m_currentDocIndex;
     ApplicationData m_data;
     DocumentManager m_DocManager;
     FileManager m_FileManager;

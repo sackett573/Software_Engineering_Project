@@ -6,18 +6,24 @@
 
 #include <string>
 #include <map>
-#include <vector>
+#include <QVector>
+#include <QObject>
 
-struct ApplicationData
+class ApplicationData :
+    public QObject
 {
-    ApplicationData() :
+    Q_OBJECT
+
+public:
+    ApplicationData(QObject * parent = NULL) :
+        QObject(parent),
         m_currentDocIndex(-1)
         {}
 
     int cursorPosition;
     int m_currentDocIndex;
     std::map<std::string, StyleEntry> m_styles;
-    std::vector<Document> m_documents;
+    QList<Document *> m_documents;
 };
 
 #endif // APPLICATIONDATA_H

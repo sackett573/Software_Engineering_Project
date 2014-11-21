@@ -10,9 +10,50 @@ Rectangle {
     anchors.left: parent.left
     color: "#AAAAAA"
 
+    Component.onDestruction:
+    {
+        for(var i = 0; i < documentList.count; i++)
+            documentList.get(i).destroy;
+    }
+
+    property int currentSelection: -1;
+
+    signal selectionChanged;
+
+    function createDocumentTab(docIndex) {
+        var doc = AppData.get_document_at(docIndex);
+
+        var docModel = Qt.createQmlObject(
+        "import QtQuick 2.3
+
+        Item {
+            property string filename: \"" + doc.filename + "\"
+            property int index: " + docIndex + "
+        }", mainRect);
+        documentList.append(docModel);
+    }
+
+    function deleteDocumentTab(docIndex) {
+        for(var i = 0; i < documentList.count; i++)
+        {
+            if(documentList.get(i).index == docIndex)
+            {
+                documentList.remove(i);
+                break;
+            }
+        }
+
+        for(var i = 0; i < documentList.count; i++)
+        {
+            if(documentList.get(i).index > docIndex)
+                documentList.get(i).index--;
+        }
+    }
+
     ListModel
     {
         id: documentList
+
     }
 
     Component
@@ -21,40 +62,91 @@ Rectangle {
         SidebarElement
         {
             width: mainRect.width
-            color: mainRect.color
-            text: "test"
+
+            text: filename
             imagePath: "Images/doc_icon.png"
+            docIndex: index
+
+            onSelected: {
+                currentSelection = docIndex;
+                selectionChanged();
+            }
         }
     }
 
     ColumnLayout
     {
         anchors.fill: parent
+        Layout.alignment: Qt.AlignTop
+        spacing: 0
 
-        Item
-        {
-            x: 0
-            y: 0
-            width: documentList.count * 80
-            height: view.height
+        ListView {
+            id: listView
             Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
+            Layout.minimumHeight: height
+            Layout.preferredHeight: height
+            Layout.maximumHeight: mainRect.height - optionRow.height
+            anchors.margins: 0
 
-            ListView {
-                id: view
-                anchors.fill: parent
-                model: documentList
-                delegate: listDelegate
+            model: documentList
+            delegate: listDelegate
+
+            width: mainRect.width
+            height: 80 * documentList.count
+            contentHeight: 80 * documentList.count - 50
+            contentWidth: mainRect.width - 50
+
+            ScrollView
+            {
+                anchors.fill: listView
+                contentItem: parent
             }
         }
 
-        Row {
-            Layout.alignment: Qt.AlignTop
-            width: mainRect.width
-            height: 80
-
+        RowLayout {
+            id: optionRow
+            anchors.top: listView.bottom
+            spacing: 0
 
             Rectangle
             {
+                id: b1
+                color: "#CCCCCC"
+                width: mainRect.width/3
+                height: 80
+                border.color: "black"
+                anchors.right: b2.left
+
+                Image
+                {
+                    width: parent.width/2
+                    height: parent.height/2
+                    x: parent.width/2 - width/2
+                    y: parent.height/2 - height/2
+                    source: "Images/create_icon.png"
+                    smooth: true
+                    mipmap: true
+                    antialiasing: true
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        parent.color = "#999999"
+                    }
+
+                    onClicked: {
+                        parent.color = "#CCCCCC"
+                        createDocument();
+                    }
+                }
+            }
+
+            Rectangle
+            {
+                id:b2
                 color: "#CCCCCC"
                 width: mainRect.width/3
                 height: 80
@@ -74,12 +166,12 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-
                     onPressed: {
                         parent.color = "#999999"
                     }
 
-                    onReleased: {
+                    onClicked: {
+                        openDocument();
                         parent.color = "#CCCCCC"
                     }
                 }
@@ -87,41 +179,13 @@ Rectangle {
 
             Rectangle
             {
+                id:b3
                 color: "#CCCCCC"
                 width: mainRect.width/3
                 height: 80
                 border.color: "black"
 
-                Image
-                {
-                    width: parent.width/2
-                    height: parent.height/2
-                    x: parent.width/2 - width/2
-                    y: parent.height/2 - height/2
-                    source: "Images/open_icon.png"
-                    smooth: true
-                    mipmap: true
-                    antialiasing: true
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        parent.color = "#999999"
-                    }
-
-                    onReleased: {
-                        parent.color = "#CCCCCC"
-                    }
-                }
-            }
-
-            Rectangle
-            {
-                color: "#CCCCCC"
-                width: mainRect.width/3
-                height: 80
-                border.color: "black"
+                anchors.left: b2.right
 
                 Image
                 {
@@ -142,28 +206,12 @@ Rectangle {
                         parent.color = "#999999"
                     }
 
-                    onReleased: {
+                    onClicked: {
                         parent.color = "#CCCCCC"
+                        closeDocument();
                     }
                 }
             }
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-
-        onPressed: {
-            var meh = Qt.createQmlObject(
-"import QtQuick 2.3
-
-Item {
-    property string filename: \"empty\"
-    property int index: -1
-}", mainRect);
-            documentList.append(meh);
-
-            console.out("listSize: " + documentList.count);
         }
     }
 }

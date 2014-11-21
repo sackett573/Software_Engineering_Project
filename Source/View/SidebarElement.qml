@@ -1,7 +1,5 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.2
-
-import QtQuick 2.3
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
@@ -9,21 +7,40 @@ import QtGraphicalEffects 1.0
 Rectangle {
     id: tabRect
     height: 80
-
+    color: "#AAAAAA"
     border.color: "#000000"
     Layout.minimumWidth: width
     Layout.minimumHeight: height
 
+    property int docIndex: -1
     property string text: "<error>"
     property string imagePath: "<error>"
+    property bool isSelected: false
+
+    signal selected(var docIndex);
+
+    function unselect(){
+        console.log("wakka");
+        tabRect.color = "#AAAAAA";
+        overlay.color = "#000000"
+        tabText.color = "black"
+        textRect.color = "#AAAAAA"
+    }
 
     MouseArea {
         anchors.fill: parent
-        onClicked: {
+        onPressed: {
+            isSelected = true;
+            selected(docIndex);
+
             parent.color = "#888888"
             overlay.color = "#FFFFFF"
             tabText.color = "#FFFFFF"
             textRect.color = "#888888"
+        }
+
+        onReleased: {
+            unselect();
         }
     }
 
@@ -43,12 +60,14 @@ Rectangle {
             mipmap: true
             antialiasing: true
 
+
             ColorOverlay {
                 id: overlay
                 anchors.fill: parent
                 source: parent
                 color: "#000000"
             }
+
         }
 
         Item

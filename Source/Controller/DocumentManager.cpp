@@ -4,25 +4,27 @@ void DocumentManager::copy(int docIndex, unsigned int begindex, unsigned int end
 {
     QClipboard * clipboard = QApplication::clipboard();
 
-    std::string seg = m_AppData->m_documents[docIndex].m_buffer.substr(begindex, endex - begindex);
-    QString segment = QString::fromStdString(seg);
-    clipboard->setText(segment);
-
-    qDebug() << "text copied: " + segment;
+    QString seg = m_AppData->m_documents[docIndex]->m_buffer.mid(begindex, endex - begindex);
+    clipboard->setText(seg);
 }
 
-void DocumentManager::cut(int, unsigned int, unsigned int)
+void DocumentManager::cut(int docIndex, unsigned int begindex, unsigned int endex)
 {
-    // stub
+    QClipboard * clipboard = QApplication::clipboard();
+
+    QString seg = m_AppData->m_documents[docIndex]->m_buffer.mid(begindex, endex - begindex);
+    clipboard->setText(seg);
+
+    m_AppData->m_documents[docIndex]->m_buffer.remove(begindex, endex - begindex);
 }
 
 int DocumentManager::paste(int docIndex, unsigned int pos)
 {
     QClipboard * clipboard = QApplication::clipboard();
 
-    Document& doc = m_AppData->m_documents[docIndex];
-    std::string s = clipboard->text().toStdString();
-    doc.m_buffer.insert(pos, s);
+    Document * doc = m_AppData->m_documents[docIndex];
+    QString s = clipboard->text();
+    doc->m_buffer.insert(pos, s);
 
     return s.size();
 }
@@ -40,14 +42,12 @@ void DocumentManager::replace(int, const std::string&, const std::string&)
 
 void DocumentManager::insert(int docIndex, unsigned int pos, char c)
 {
-    Document& doc = m_AppData->m_documents[docIndex];
-    std::string::iterator insertit = doc.m_buffer.begin() + pos;
-    doc.m_buffer.insert(insertit, c);
+    Document * doc = m_AppData->m_documents[docIndex];
+    doc->m_buffer.insert(pos, c);
 }
 
 void DocumentManager::backspace(int docIndex, unsigned int pos)
 {
-    Document& doc = m_AppData->m_documents[docIndex];
-    std::string::iterator removeit = doc.m_buffer.begin() + pos;
-    doc.m_buffer.erase(removeit);
+    Document * doc = m_AppData->m_documents[docIndex];
+    doc->m_buffer.remove(pos, 1);
 }

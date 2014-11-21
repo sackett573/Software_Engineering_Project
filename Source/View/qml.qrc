@@ -5,6 +5,7 @@
         <file>SidebarElement.qml</file>
         <file>../../Images/close_icon.png</file>
         <file>../../Images/doc_icon.png</file>
+        <file>../../Images/create_icon.png</file>
         <file>../../Images/open_icon.png</file>
     </qresource>
 </RCC>

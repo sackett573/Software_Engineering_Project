@@ -31,9 +31,8 @@ void TextViewer::paint(QPainter *painter)
 
         while(m_currentDoc->m_buffer[i] != '\0')
         {
-            int pos = m_currentDoc->m_buffer.find('\n', i);
-            std::string line = m_currentDoc->m_buffer.substr(i, pos - i);
-            QString temp = QString::fromStdString(line);
+            int pos = m_currentDoc->m_buffer.indexOf('\n', i);
+            QString line = m_currentDoc->m_buffer.mid(i, pos - i);
 
             if(m_begindex != -1 && m_endex != -1 && m_begindex != m_endex)
             {
@@ -43,7 +42,7 @@ void TextViewer::paint(QPainter *painter)
                     {
                         int lastX = 0;
 
-                        QString sub = QString::fromStdString(line.substr(0, m_begindex - i));
+                        QString sub = line.mid(0, m_begindex - i);
 
                         painter->setPen(*currentPen);
                         painter->setBackground(*currentBackground);
@@ -52,7 +51,7 @@ void TextViewer::paint(QPainter *painter)
                                           Qt::TextSingleLine, sub);
                         lastX = sub.size() * charWidth;
 
-                        sub = QString::fromStdString(line.substr(m_begindex - i, (m_endex - i) - (m_begindex - i)));
+                        sub = line.mid(m_begindex - i, (m_endex - i) - (m_begindex - i));
 
                         currentPen = &selectionText;
                         currentBackground = &selectionBrush;
@@ -63,7 +62,7 @@ void TextViewer::paint(QPainter *painter)
                                           Qt::TextSingleLine, sub);
                         lastX = lastX + (sub.size() * charWidth);
 
-                        sub = QString::fromStdString(line.substr(m_endex - i, (line.size()) - (m_endex -i)));
+                        sub = line.mid(m_endex - i, (line.size()) - (m_endex -i));
 
                         currentPen = &penText;
                         currentBackground = &normalBrush;
@@ -77,7 +76,7 @@ void TextViewer::paint(QPainter *painter)
                     {
                         int lastX = 0;
 
-                        QString sub = QString::fromStdString(line.substr(0, m_begindex - i));
+                        QString sub = line.mid(0, m_begindex - i);
                         painter->setPen(*currentPen);
                         painter->setBackground(*currentBackground);
                         painter->drawText(0, (m_numLines)*charHeight,
@@ -85,7 +84,7 @@ void TextViewer::paint(QPainter *painter)
                                           Qt::TextSingleLine, sub);
                         lastX = sub.size() * charWidth;
 
-                        sub = QString::fromStdString(line.substr(m_begindex - i, (line.size()) - (m_begindex - i)));
+                        sub = line.mid(m_begindex - i, (line.size()) - (m_begindex - i));
 
                         currentPen = &selectionText;
                         currentBackground =&selectionBrush;
@@ -100,7 +99,7 @@ void TextViewer::paint(QPainter *painter)
                 {
                     int lastX = 0;
 
-                    QString sub = QString::fromStdString(line.substr(0, m_endex - i));
+                    QString sub = line.mid(0, m_endex - i);
                     painter->setPen(*currentPen);
                     painter->setBackground(*currentBackground);
                     painter->drawText(0, (m_numLines)*charHeight,
@@ -108,7 +107,7 @@ void TextViewer::paint(QPainter *painter)
                                       Qt::TextSingleLine, sub);
                     lastX = sub.size() * charWidth;
 
-                    sub = QString::fromStdString(line.substr(m_endex - i, (line.size()) - (m_endex - i)));
+                    sub = line.mid(m_endex - i, (line.size()) - (m_endex - i));
 
                     currentPen = &penText;
                     currentBackground =&normalBrush;
@@ -122,17 +121,17 @@ void TextViewer::paint(QPainter *painter)
                 {
                     painter->setPen(*currentPen);
                     painter->setBackground(*currentBackground);
-                    painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
+                    painter->drawText(0, (m_numLines)*charHeight, (line.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, line);
                 }
             }
             else
             {
                 painter->setPen(*currentPen);
                 painter->setBackground(*currentBackground);
-                painter->drawText(0, (m_numLines)*charHeight, (temp.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, temp);
+                painter->drawText(0, (m_numLines)*charHeight, (line.size() * charWidth), (m_numLines+1)*charHeight,Qt::TextSingleLine, line);
             }
 
-            maxLineWidth = (maxLineWidth > (temp.size() * charWidth))?maxLineWidth:(temp.size() * charWidth);
+            maxLineWidth = (maxLineWidth > (line.size() * charWidth))?maxLineWidth:(line.size() * charWidth);
 
             m_lineData[m_numLines].lineStartIndex = i;
             if(pos == -1)
@@ -218,8 +217,6 @@ int TextViewer::newSelectionFromRowCol(int col, int row)
     {
         QFontMetrics m(m_currentFont);
 
-        qDebug() << "col: " << col << "   row: " << row;
-
         if(row > m_numLines)
             row = m_numLines;
 
@@ -230,9 +227,25 @@ int TextViewer::newSelectionFromRowCol(int col, int row)
             index = m_lineData[row].lineStartIndex + col;
 
         m_currentColumn = index - m_lineData[row].lineStartIndex;
-        qDebug() << "newCol: " << m_currentColumn;
         m_currentRow = row;
     }
 
     return index;
+}
+
+void TextViewer::updateRowCol()
+{
+    if(m_currentDoc != NULL)
+    {
+        for(auto& d : m_lineData)
+        {
+            if(d.second.lineStartIndex < m_cursorPos && m_cursorPos < d.second.lineEndIndex)
+            {
+                m_currentRow = d.first;
+                break;
+            }
+        }
+
+        m_currentColumn = m_cursorPos - m_lineData[m_currentRow].lineStartIndex;
+    }
 }
