@@ -23,6 +23,10 @@ class TextViewer :
 
     Q_PROPERTY(int endex READ endex WRITE setEndex NOTIFY endexChanged)
 
+    Q_PROPERTY(int currentRow READ currentRow NOTIFY rowChanged)
+
+    Q_PROPERTY(int currentColumn READ currentColumn NOTIFY columnChanged)
+
     struct LineData
     {
         int lineStartIndex;
@@ -49,6 +53,10 @@ public:
 
     int endex() const {return m_endex;}
 
+    int currentRow() const {return m_currentRow;}
+
+    int currentColumn() const {return m_currentColumn;}
+
     // Setters
     void setDocument(Document* doc) {m_currentDoc = doc;}
 
@@ -62,6 +70,8 @@ public:
 
     // Invokables
     Q_INVOKABLE int getNewSelection(int x, int y);
+
+    Q_INVOKABLE int newSelectionFromRowCol(int col, int row);
 
     // Event Handlers
     void paint(QPainter *painter);
@@ -77,12 +87,18 @@ signals:
 
     void endexChanged();
 
+    void rowChanged();
+
+    void columnChanged();
+
 private:
     QFont m_currentFont;
     Document* m_currentDoc;
     std::map<int, LineData> m_lineData;
     int m_numLines;
     int m_cursorPos;
+    int m_currentRow;
+    int m_currentColumn;
     int m_begindex;
     int m_endex;
     bool m_cursorVisible;

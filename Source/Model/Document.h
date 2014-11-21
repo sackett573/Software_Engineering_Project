@@ -5,6 +5,7 @@
 #include <QObject>
 #include <string>
 #include <vector>
+#include <QList>
 
 class Document :
     public QObject
@@ -23,7 +24,7 @@ public:
 
     std::string m_filename;
     std::string m_buffer;
-    std::vector<StyleEntry> m_styleEntries;
+    QList<StyleEntry> m_styleEntries;
 };
 
 #endif // DOCUMENT_H

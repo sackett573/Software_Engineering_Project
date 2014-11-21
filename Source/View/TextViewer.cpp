@@ -194,15 +194,44 @@ int TextViewer::getNewSelection(int x, int y)
         if(line > m_numLines)
             line = m_numLines;
 
+        m_currentRow = line;
+
         int numCharsFromLeft = x/m.width('A');
         numCharsFromLeft += (((x%m.width('A'))/static_cast<float>(m.width('A')))>0.5)?1:0;
         int lineLength = m_lineData[line].lineEndIndex - m_lineData[line].lineStartIndex;
 
-
         if(numCharsFromLeft > lineLength)
-            index = m_lineData[line].lineEndIndex;
+            index = m_lineData[line].lineEndIndex; 
         else
             index = m_lineData[line].lineStartIndex + numCharsFromLeft;
+
+        m_currentColumn = index - m_lineData[line].lineStartIndex;
+    }
+
+    return index;
+}
+
+int TextViewer::newSelectionFromRowCol(int col, int row)
+{
+    int index;
+    if(m_currentDoc != NULL)
+    {
+        QFontMetrics m(m_currentFont);
+
+        qDebug() << "col: " << col << "   row: " << row;
+
+        if(row > m_numLines)
+            row = m_numLines;
+
+        int lineLength = m_lineData[row].lineEndIndex - m_lineData[row].lineStartIndex;
+        if(col > lineLength)
+            index = m_lineData[row].lineEndIndex;
+        else
+            index = m_lineData[row].lineStartIndex + col;
+
+        m_currentColumn = index - m_lineData[row].lineStartIndex;
+        qDebug() << "newCol: " << m_currentColumn;
+        m_currentRow = row;
     }
 
     return index;

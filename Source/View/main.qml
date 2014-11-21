@@ -107,13 +107,13 @@ ApplicationWindow {
                         if(viewer.document != null)
                         {
                             var val = viewer.getNewSelection(mouseX, mouseY);
+                            console.log("column: " + viewer.currentColumn);
                             AppData.cursorPosition = val;
                             viewer.cursorPos = val;
                             viewer.cursorVisible = true;
                             viewer.begindex = -1;
                             viewer.endex = -1;
                             cursorTimer.restart();
-                            console.log("press " + val);
                             viewer.update();
                         }
                     }
@@ -140,7 +140,6 @@ ApplicationWindow {
                             }
 
                             viewer.update();
-                            console.log("release" + val);
                         }
                     }
                 }
@@ -153,18 +152,51 @@ ApplicationWindow {
                 if(viewer.cursorPos > 0)
                 {
                     viewer.cursorPos--;
+                    console.log("column: " + viewer.currentColumn);
+                    AppData.cursorPosition = viewer.cursorPos;
+                    viewer.cursorVisible = true;
+                    viewer.begindex = -1;
+                    viewer.endex = -1;
+                    viewer.update();
                 }
             }
             else if(event.key === Qt.Key_Right)
             {
+                console.log("column: " + viewer.currentColumn);
+                viewer.cursorPos++;
+                AppData.cursorPosition = viewer.cursorPos;
+                viewer.cursorVisible = true;
+                viewer.begindex = -1;
+                viewer.endex = -1;
+                cursorTimer.restart();
+                viewer.update();
             }
             else if(event.key === Qt.Key_Up)
             {
-
+                if(viewer.currentRow > 0)
+                {
+                    var val = viewer.newSelectionFromRowCol(viewer.currentColumn, viewer.currentRow - 1);
+                    console.log("column: " + viewer.currentColumn);
+                    viewer.cursorPos = val;
+                    AppData.cursorPosition = viewer.cursorPos;
+                    viewer.cursorVisible = true;
+                    viewer.begindex = -1;
+                    viewer.endex = -1;
+                    cursorTimer.restart();
+                    viewer.update();
+                }
             }
             else if(event.key === Qt.Key_Down)
             {
-
+                var val = viewer.newSelectionFromRowCol(viewer.currentColumn, viewer.currentRow + 1);
+                console.log("column: " + viewer.currentColumn);
+                viewer.cursorPos = val;
+                AppData.cursorPosition = viewer.cursorPos;
+                viewer.cursorVisible = true;
+                viewer.begindex = -1;
+                viewer.endex = -1;
+                cursorTimer.restart();
+                viewer.update();
             }
             else if(event.key === Qt.Key_Backspace)
             {

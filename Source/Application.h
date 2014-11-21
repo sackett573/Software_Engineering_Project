@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QDebug>
+#include <QQmlListProperty>
 #include "ApplicationData.h"
 #include "DocumentManager.h"
 #include "FileManager.h"
